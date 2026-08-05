@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container py-5">
+    <div id="adminAlert" class="alert d-none" role="alert"></div>
+
+    <div class="admin-header mb-4">
+        <div>
+            <p class="text-success fw-bold mb-1">Management</p>
+            <h1 class="section-title mb-2">景點資料管理</h1>
+            <p class="text-secondary mb-0">管理 SQLite 資料庫中的景點資料與統計圖表。</p>
+        </div>
+        <button id="addAttraction" class="btn btn-teal px-4" type="button">＋ 新增景點</button>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="admin-summary-card">
+                <span class="summary-label">目前景點總數</span>
+                <div class="d-flex align-items-baseline gap-2 mt-2">
+                    <strong id="totalAttractions">0</strong>
+                    <span class="summary-unit">筆資料</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="admin-tip-card">
+                <strong>資料儲存說明</strong>
+                <p class="mb-0">新增、修改與刪除會透過 Flask API 寫入 SQLite，重新整理頁面後資料仍會保留。</p>
+            </div>
+        </div>
+    </div>
+
+    <form id="adminFilter" class="filter-panel p-3 mb-4">
+        <div class="row g-2">
+            <div class="col-md-5">
+                <input id="adminKeyword" name="keyword" class="form-control" placeholder="搜尋名稱、地區或介紹">
+            </div>
+            <div class="col-md-3">
+                <select id="adminDistrict" name="district" class="form-select">
+                    <option value="">全部地區</option>
+                    {% for district in districts %}
+                    <option value="{{ district }}">{{ district }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="adminCategory" name="category" class="form-select">
+                    <option value="">全部分類</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-teal" type="submit">查詢</button>
+            </div>
+        </div>
+    </form>
+
+    <section class="admin-panel mb-4">
+        <div class="admin-panel-header">
+            <div>
+                <h2 class="h4 mb-1">已建立的景點</h2>
+                <p class="text-secondary small mb-0">可查看、修改或刪除目前的景點資料。</p>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th>圖片</th>
+                        <th>景點資訊</th>
+                        <th>建立日期</th>
+                        <th class="text-end">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="adminRows"></tbody>
+            </table>
+        </div>
+        <div class="admin-pagination">
+            <small id="pageInfo" class="text-secondary"></small>
+            <nav aria-label="景點資料分頁">
+                <ul id="pagination" class="pagination pagination-sm mb-0"></ul>
+            </nav>
+        </div>
+    </section>
+
+    <section>
+        <div class="mb-3">
+            <h2 class="h4 mb-1">景點統計</h2>
+            <p class="text-secondary small mb-0">統計結果會隨新增、修改與刪除更新。</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="chart-panel h-100">
+                    <h3 class="h6 mb-3">景點分類分布</h3>
+                    <div class="chart-wrap chart-wrap-doughnut">
+                        <div class="chart-box">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="chart-panel h-100">
+                    <h3 class="h6 mb-3">行政區景點數量</h3>
+                    <div class="chart-wrap">
+                        <div class="chart-box">
+                            <canvas id="districtChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="modal fade" id="attractionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content attraction-modal">
+            <div class="modal-header">
+                <div>
+                    <p class="text-success fw-bold small mb-1">Attraction Form</p>
+                    <h2 id="formTitle" class="modal-title h4">新增景點</h2>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+            </div>
+            <form id="attractionForm" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="id">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="name">景點名稱 *</label>
+                            <input id="name" class="form-control" required>
+                            <div class="invalid-feedback">請輸入景點名稱。</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="formDistrict">城市／地區 *</label>
+                            <input id="formDistrict" class="form-control" placeholder="例如：西區" required>
+                            <div class="invalid-feedback">請輸入地區。</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="formCategory">分類 *</label>
+                            <input id="formCategory" class="form-control" placeholder="例如：自然景觀" required>
+                            <div class="invalid-feedback">請輸入分類。</div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="image">圖片路徑或網址</label>
+                            <input id="image" type="text" class="form-control" placeholder="images/attraction_031.jpg 或 https://...">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="description">列表簡介 *</label>
+                            <textarea id="description" rows="3" class="form-control" required></textarea>
+                            <div class="invalid-feedback">請輸入列表簡介。</div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="intro">詳細介紹</label>
+                            <textarea id="intro" rows="4" class="form-control"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="address">地址</label>
+                            <input id="address" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="suitable">適合族群</label>
+                            <input id="suitable" class="form-control" placeholder="親子、朋友">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="recommendTime">建議時段</label>
+                            <input id="recommendTime" class="form-control" placeholder="下午至傍晚">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
+                    <button class="btn btn-teal px-4" type="submit">儲存景點</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/chartjs/chart.umd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

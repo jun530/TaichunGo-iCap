@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <section class="admin-panel p-4 p-md-5">
+                <p class="text-success fw-bold mb-1">Administrator</p>
+                <h1 class="section-title h3 mb-3">管理員登入</h1>
+                <p class="text-secondary">請登入後進入景點資料管理頁。</p>
+
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <form method="POST" action="/login" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label" for="username">帳號</label>
+                        <input
+                            id="username"
+                            name="username"
+                            class="form-control"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="password">密碼</label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            class="form-control"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+                    <button class="btn btn-teal w-100" type="submit">登入管理頁</button>
+                </form>
+
+                <div class="alert alert-info small mt-4 mb-0">
+                    Demo 帳號：admin；密碼：admin123
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

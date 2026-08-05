@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container py-5">
+    <a class="detail-back-link" href="/attractions">
+        <i class="fa-solid fa-arrow-left me-2"></i>返回景點列表
+    </a>
+    <div id="detailContent" data-attraction-id="{{ attraction_id }}"></div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/detail.js') }}"></script>
+{% endblock %}

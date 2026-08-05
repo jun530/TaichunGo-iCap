@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# 本專案保留 database/taichung_go.db 方便 Demo。
+# 若要重建資料庫，請刪除該檔後執行：
+# python scripts/import_dataset.py

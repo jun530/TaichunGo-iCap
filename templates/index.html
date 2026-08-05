@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main>
+    <section class="hero">
+        <div class="container">
+            <div class="col-lg-7">
+                <p class="text-uppercase fw-bold">Travel Guide · Taichung</p>
+                <h1>每一次旅行，<br>都能遇見不一樣的台中。</h1>
+                <p class="fs-5 my-4">從海線夕陽、城市藝文到山林秘境，讓 Taichung Go 陪你找到適合今天的台中小旅行。</p>
+                <a class="btn btn-light px-4" href="/attractions">開始探索景點</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="container py-5">
+        <div class="category-guide">
+            <img src="{{ url_for('static', filename='images/ai-category-guide.png') }}" alt="自然、藝文與美食的台中旅遊分類導覽 AI 視覺">
+            <div class="category-guide-overlay">
+                <p>TAICHUNG TRAVEL ROUTES</p>
+                <h2>今天，想遇見哪一種台中？</h2>
+                <div class="category-guide-links">
+                    <a href="/attractions?category=自然景觀">自然景觀</a>
+                    <a href="/attractions?category=藝文地標">藝文地標</a>
+                    <a href="/attractions?category=美食商圈">美食商圈</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="weather" class="container weather-section">
+        <div class="weather-card p-4 p-md-5">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                <div>
+                    <p class="text-success fw-bold mb-1">Taichung Weather</p>
+                    <h2 class="section-title h3 mb-0">台中今日天氣</h2>
+                </div>
+                <span id="weatherUpdate" class="weather-update">正在取得台中即時天氣…</span>
+            </div>
+            <div class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="weather-main h-100">
+                        <span id="weatherIcon" class="weather-icon">🌤️</span>
+                        <div>
+                            <p id="weatherText" class="mb-1 text-secondary">讀取中</p>
+                            <strong id="weatherTemperature" class="weather-temperature">--<span>°C</span></strong>
+                            <p id="weatherFeel" class="mb-0 small">請稍候</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="weather-metric h-100">
+                        <span>☔</span>
+                        <div>
+                            <p>降雨機率</p>
+                            <strong id="weatherRain">--%</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="weather-metric h-100">
+                        <span>💨</span>
+                        <div>
+                            <p>風速</p>
+                            <strong id="weatherWind">-- km/h</strong>
+                            <small>出門前留意天候變化</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="weather-note mb-0 mt-4">資料來源：Open-Meteo 天氣 API；若暫時無法連線，會保留提示狀態。</p>
+        </div>
+    </section>
+
+    <section class="container events-section py-5">
+        <div class="text-center mb-4">
+            <p class="text-success fw-bold mb-1">Event Highlights</p>
+            <h2 class="section-title">活動快訊</h2>
+            <p class="text-secondary mb-0">把近期的好玩提案收進你的台中行程。</p>
+        </div>
+        <div class="event-carousel" data-event-carousel>
+            <button class="event-control event-control-prev" type="button" data-event-prev aria-label="上一則活動">‹</button>
+            <div class="event-viewport">
+                <div class="event-track">
+                    <article class="event-card">
+                        <img src="{{ url_for('static', filename='images/ai-event-musical.png') }}" alt="魔女宅急便音樂劇 AI 活動視覺">
+                        <div class="event-card-body">
+                            <span class="event-date">07.24 — 08.12</span>
+                            <h3>《魔女宅急便》音樂劇</h3>
+                            <p>跟著琪琪展開勇氣與蛻變的冒險旅程，共享最溫馨的仲夏藝文時光。</p>
+                            <span class="event-location">西屯區・國家歌劇院周邊</span>
+                        </div>
+                    </article>
+                    <article class="event-card">
+                        <img src="{{ url_for('static', filename='images/ai-event-coastal-rock.png') }}" alt="濱海搖滾音樂祭 AI 活動視覺">
+                        <div class="event-card-body">
+                            <span class="event-date">08.15 — 08.16</span>
+                            <h3>濱海搖滾音樂祭 2026</h3>
+                            <p>伴著夕陽與海風，在台中港感受最愜意的海線音樂週末。</p>
+                            <span class="event-location">梧棲區・台中港</span>
+                        </div>
+                    </article>
+                    <article class="event-card">
+                        <img src="{{ url_for('static', filename='images/ai-event-jazz.png') }}" alt="台中爵士音樂節 AI 活動視覺">
+                        <div class="event-card-body">
+                            <span class="event-date">10.16 — 10.25</span>
+                            <h3>台中爵士音樂節</h3>
+                            <p>讓城市廣場化身秋夜最迷人的音樂客廳。</p>
+                            <span class="event-location">西區・臺中市民廣場</span>
+                        </div>
+                    </article>
+                    <article class="event-card">
+                        <img src="{{ url_for('static', filename='images/ai-event-travel-fair.png') }}" alt="臺中國際旅展 AI 活動視覺">
+                        <div class="event-card-body">
+                            <span class="event-date">10.30 — 11.02</span>
+                            <h3>2026 ATTA 臺中國際旅展</h3>
+                            <p>年終出遊、家庭旅行優惠一次網羅，逛展也能規劃下一趟旅行。</p>
+                            <span class="event-location">西屯區・臺中國際會展中心</span>
+                        </div>
+                    </article>
+                    <article class="event-card">
+                        <img src="{{ url_for('static', filename='images/ai-event-rock-taichung.png') }}" alt="搖滾台中 AI 活動視覺">
+                        <div class="event-card-body">
+                            <span class="event-date">10.31 — 11.01</span>
+                            <h3>搖滾台中 ROCK IN TAICHUNG</h3>
+                            <p>重量級卡司輪番登場，全程免費點燃秋日搖滾魂。</p>
+                            <span class="event-location">南屯區・文心森林公園</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <button class="event-control event-control-next" type="button" data-event-next aria-label="下一則活動">›</button>
+            <div class="event-dots" aria-label="活動輪播頁面"></div>
+        </div>
+    </section>
+
+    <section class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <p class="text-success mb-1">精選目的地</p>
+                <h2 class="section-title">本週推薦景點</h2>
+            </div>
+            <a href="/attractions" class="btn btn-outline-success">全部景點</a>
+        </div>
+        <div id="featuredList" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+        <div id="homeAlert" class="alert alert-warning d-none mt-3"></div>
+    </section>
+
+    <section id="trip-assistant" class="container py-5">
+        <div class="info-box landing-ai-box p-4 p-md-5">
+            <div class="row align-items-end">
+                <div class="col-lg-7">
+                    <p class="text-success fw-bold">AI 旅遊小幫手</p>
+                    <h2 class="section-title mb-2">告訴我你的旅行需求</h2>
+                    <p class="text-secondary mb-lg-0">選擇旅遊時間、喜歡類型與同行對象，從台中景點資料庫獲得透明的規則式推薦。</p>
+                </div>
+                <div class="col-lg-5">
+                    <div class="landing-ai-badge">
+                        <i class="fa-solid fa-route"></i>
+                        <span>你的台中行程，<br><strong>從一個選擇開始。</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mt-2">
+                <div class="col-md-4">
+                    <label class="form-label" for="travelTime">旅遊時間</label>
+                    <select id="travelTime" class="form-select">
+                        <option>半日</option>
+                        <option>一日</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="travelCategory">喜歡類型</label>
+                    <select id="travelCategory" class="form-select">
+                        <option value="">不限定</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="travelPeople">同行對象</label>
+                    <select id="travelPeople" class="form-select">
+                        <option>親子</option>
+                        <option>朋友</option>
+                        <option>情侶</option>
+                    </select>
+                </div>
+            </div>
+            <button id="aiRecommendBtn" class="btn btn-teal mt-4" type="button">
+                <i class="fa-solid fa-sparkles me-2"></i>產生我的旅遊建議
+            </button>
+            <div id="aiResult" class="row g-4 mt-1"></div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+<script src="{{ url_for('static', filename='js/weather.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ai.js') }}"></script>
+{% endblock %}
