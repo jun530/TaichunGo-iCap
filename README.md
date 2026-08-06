@@ -75,7 +75,6 @@ http://127.0.0.1:5000
 
 | 方法 | 路徑 | 功能 |
 |---|---|---|
-| POST | `/login` | 管理員登入 |
 | GET | `/api/attractions` | 取得景點列表 |
 | GET | `/api/attractions/<id>` | 取得單一景點 |
 | POST | `/api/attractions` | 新增景點，需管理員登入 |
