@@ -73,9 +73,9 @@ TaichungGo-flask/
 Windows：
 
 ```bash
+python -m venv venv
 如無法順利進入venv，則先輸入
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 ```
