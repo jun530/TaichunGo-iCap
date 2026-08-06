@@ -2,11 +2,7 @@
 
 ## 專案介紹
 
-Taichung Go 是一個適合結訓 Demo 的旅遊景點推薦網站，從原本 Laravel + MySQL 架構調整為 Flask + SQLite + 本地 CSV 資料集。網站保留原本首頁、景點列表、景點詳細頁、管理頁、Bootstrap 版型、主色系、圖片、Modal、SweetAlert 與 Chart.js 圖表。
-
-## 製作目的
-
-本專案用來展示初學者能整合前端畫面、JavaScript 互動、RESTful API、SQLite 資料庫、資料匯入與簡易 AI 規則式推薦流程。
+Taichung Go 是一個旅遊景點推薦網站，架構為 Flask + SQLite + 本地 CSV 資料集。網站包含首頁、景點列表、景點詳細頁、管理頁、Bootstrap 版型、圖片、Modal、SweetAlert 與 Chart.js 圖表。
 
 ## 專案功能
 
@@ -77,6 +73,8 @@ TaichungGo-flask/
 Windows：
 
 ```bash
+如無法順利進入venv，則先輸入
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
@@ -193,24 +191,6 @@ Demo 帳密：
 - 中文亂碼：請確認 CSV 使用 UTF-8 或 UTF-8 with BOM 儲存。
 - 圖片破圖：請確認圖片在 `static/images/` 中，資料庫 image 欄位使用 `images/檔名`。
 - Chart.js 或 SweetAlert 無法顯示：請確認瀏覽器可載入對應前端套件；主要 CRUD API 不受影響。
-
-## Demo 操作順序
-
-1. 介紹專案已從 Laravel 改為 Flask + SQLite。
-2. 執行資料匯入，說明 CSV 到 SQLite 的流程。
-3. 啟動 Flask，開啟首頁。
-4. 展示景點列表的搜尋、行政區篩選、分類篩選、排序與分頁。
-5. 點擊任一景點進入詳細頁。
-6. 進入管理員登入頁，使用 `admin / admin123` 登入。
-7. 進入管理頁，示範新增、修改、刪除與表單驗證。
-8. 重新整理管理頁，證明資料寫入 SQLite。
-9. 展示 Chart.js 統計圖表。
-10. 回首頁展示 AI 規則式推薦。
-11. 打開 `docs/evaluation-checklist.md` 對照 A1～A12、B1～B3。
-
-## 實作評量項目對照
-
-完整對照請見 `docs/evaluation-checklist.md`。
 
 ## 作者可自行修改的資料區塊
 
