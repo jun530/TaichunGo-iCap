@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // 管理頁集中維護目前頁碼、資料列與圖表實例。
     const form = document.getElementById("attractionForm");
     const modalElement = document.getElementById("attractionModal");
     const modal = new bootstrap.Modal(modalElement);
@@ -11,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let categoryChart;
     let districtChart;
 
+    // 表單欄位清單用於重設驗證狀態與輸入提示。
     const fieldIds = [
         "name",
         "formDistrict",
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const getValue = (id) => $(id).value.trim();
 
     function showAlert(message, type = "warning") {
+        // 頁面上方的 Bootstrap 提示區，適合顯示載入等非確認式訊息。
         const alert = $("adminAlert");
         alert.className = `alert alert-${type}`;
         alert.textContent = message;
@@ -38,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function notify(options) {
+        // 優先使用 SweetAlert；套件未載入時仍可退回瀏覽器原生提示。
         if (window.Swal) {
             return Swal.fire(options);
         }
@@ -47,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function currentParams() {
+        // 將後台篩選條件與目前頁碼轉成景點列表 API 的參數。
         const params = new URLSearchParams();
         const filters = {
             keyword: getValue("adminKeyword"),
@@ -68,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function loadData() {
+        // 重新載入表格、總筆數與圖表；CRUD 成功後也會呼叫這裡同步畫面。
         try {
             hideAlert();
             const result = await apiFetch(`/api/attractions?${currentParams().toString()}`);
@@ -84,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderTable(total) {
+        // 將目前頁面的景點資料轉成表格列，並綁定查看、修改、刪除按鈕。
         if (!state.items.length) {
             $("adminRows").innerHTML = `
                 <tr>
@@ -124,12 +131,14 @@ document.addEventListener("DOMContentLoaded", () => {
             button.addEventListener("click", () => deleteAttraction(Number(button.dataset.id)));
         });
 
+        // 顯示目前頁範圍，例如「第 11～20 筆，共 36 筆」。
         const startItem = (state.page - 1) * pageSize + 1;
         const endItem = Math.min(state.page * pageSize, total);
         $("pageInfo").textContent = `顯示第 ${startItem}～${endItem} 筆，共 ${total} 筆`;
     }
 
     function renderPagination(total) {
+        // 依 API 回傳的 total_pages 建立後台分頁控制項。
         const pagination = $("pagination");
         pagination.innerHTML = "";
 
@@ -154,7 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // 圖表
     async function loadStatistics() {
+        // 統計與列表資料分開取得，避免篩選中的列表影響全資料庫統計。
         const result = await apiFetch("/api/statistics");
         const colors = [
             "#087f78",
@@ -172,6 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Chart.js 重畫前必須先銷毀舊實例，否則 canvas 會重複疊圖。
         if (categoryChart) {
             categoryChart.destroy();
         }
@@ -231,6 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function editAttraction(id) {
+        // 先讀取最新單筆資料，再把值帶入同一個 Modal 供編輯。
         try {
             const result = await apiFetch(`/api/attractions/${id}`);
             const item = result.data;
@@ -257,6 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function resetForm() {
+        // 新增前或 Modal 關閉後清空表單，避免上一次編輯內容殘留。
         form.reset();
         form.classList.remove("was-validated");
         $("id").value = "";
@@ -268,6 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function validateForm() {
+        // 前端先提示必要欄位；後端仍會再驗證，避免繞過瀏覽器直接呼叫 API。
         const requiredFields = ["name", "formDistrict", "formCategory", "description"];
         let valid = true;
 
@@ -293,6 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function formPayload() {
+        // 將表單欄位轉成後端 API 要求的 JSON 欄位名稱與預設值。
         return {
             name: getValue("name"),
             district: getValue("formDistrict"),
@@ -307,6 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function deleteAttraction(id) {
+        // 刪除不可直接復原，因此先要求使用者在 SweetAlert 確認。
         const item = state.items.find((attraction) => attraction.id === id);
         const confirmResult = await notify({
             title: "確定要刪除嗎？",
@@ -326,6 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const result = await apiFetch(`/api/attractions/${id}`, { method: "DELETE" });
+            // 成功後重新取得資料，讓表格、筆數與兩張圖表立即一致。
             await loadData();
             notify({
                 icon: "success",
@@ -345,6 +363,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     form.addEventListener("submit", async (event) => {
+        // 同一張表單同時處理新增與修改：有 id 用 PATCH，沒有 id 用 POST。
         event.preventDefault();
 
         if (!validateForm()) {
@@ -381,11 +400,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     $("adminFilter").addEventListener("submit", (event) => {
+        // 搜尋條件改變時一律回到第一頁，避免落在不存在的頁碼。
         event.preventDefault();
         state.page = 1;
         loadData();
     });
 
+    // 關鍵字即時搜尋；下拉選單變更後立即重新查詢。
     ["adminKeyword", "adminDistrict", "adminCategory"].forEach((id) => {
         const eventName = id === "adminKeyword" ? "input" : "change";
         $(id).addEventListener(eventName, () => {
@@ -394,6 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // 按新增時開啟已重設的 Modal。
     $("addAttraction").addEventListener("click", () => {
         resetForm();
         modal.show();
@@ -407,5 +429,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // 管理頁初始化：先取得第一頁資料與統計圖表。
     loadData();
 });

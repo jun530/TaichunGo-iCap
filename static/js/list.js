@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // 列表頁狀態集中管理，篩選、分頁與取消舊請求都共用這份狀態。
     const perPage = 6;
     const state = {
         page: 1,
@@ -15,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function readInitialQuery() {
+        // 讓網址列的查詢參數回填到表單，重新整理或分享連結仍保留篩選條件。
         const params = new URLSearchParams(location.search);
         ["keyword", "district", "category", "sort"].forEach((name) => {
             if (params.has(name) && form.elements[name]) {
@@ -24,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function currentParams() {
+        // 將目前表單值轉成 API 可使用的 query string。
         const params = new URLSearchParams();
 
         ["keyword", "district", "category", "sort"].forEach((name) => {
@@ -40,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderPagination() {
+        // 依 API 回傳的總頁數建立頁碼按鈕。
         const pagination = $("pagination");
         pagination.innerHTML = "";
 
@@ -65,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function render(result) {
+        // 將 API 景點陣列轉為卡片，同時更新筆數與空資料提示。
         state.totalPages = result.total_pages;
         $("resultInfo").textContent =
             `共找到 ${result.total} 筆景點（第 ${result.page} / ${result.total_pages} 頁）`;
@@ -74,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function fetchAttractions() {
+        // 新請求前取消前一個尚未完成的請求，避免快速輸入時舊結果覆蓋新結果。
         state.controller?.abort();
         state.controller = new AbortController();
         const params = currentParams();
@@ -90,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(result.message || "景點資料讀取失敗");
             }
 
+            // 同步更新網址，不重新載入整個頁面。
             history.replaceState(null, "", `/attractions?${params.toString()}`);
             render(result);
         } catch (error) {
@@ -104,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function queueFetch() {
+        // 關鍵字輸入採 250ms 防抖，避免每打一個字就大量呼叫 API。
         clearTimeout(state.debounceId);
         state.debounceId = setTimeout(() => {
             state.page = 1;
@@ -111,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 250);
     }
 
+    // 表單送出、下拉選擇與清除按鈕都會重新載入第一頁資料。
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         state.page = 1;

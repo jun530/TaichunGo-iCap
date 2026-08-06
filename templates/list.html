@@ -8,6 +8,7 @@
         <p class="text-secondary">用關鍵字、地區與分類快速找到適合你的台中旅行目的地。</p>
     </div>
 
+    {# list.js 讀取表單條件，改以 AJAX 呼叫 API，不會整頁重新載入。 #}
     <form id="attractionFilter" class="filter-panel p-3 p-md-4 mb-4" method="GET" action="/attractions">
         <div class="row g-3 align-items-end">
             <div class="col-md-4">
@@ -50,6 +51,7 @@
 
     <p id="resultInfo" class="text-secondary" aria-live="polite"></p>
     <div id="ajaxStatus" class="visually-hidden" role="status" aria-live="polite"></div>
+    {# JavaScript 動態插入景點卡片、無結果提示與分頁按鈕。 #}
     <div id="listResult" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
     <div id="emptyState" class="alert alert-warning d-none mt-4">找不到符合條件的景點，請調整搜尋條件後再試。</div>
     <nav class="mt-4" aria-label="景點分頁">

@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    // 詳細頁只由樣板提供 id，完整內容一律透過 API 取得。
     const detail = document.getElementById("detailContent");
 
     if (!detail) {
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const attractionId = Number(detail.dataset.attractionId);
 
     if (!Number.isInteger(attractionId) || attractionId <= 0) {
+        // 將完整景點欄位分區渲染；缺少的選填資料會以友善預設文字代替。
         detail.innerHTML = `
             <div class="alert alert-warning">
                 景點 id 格式錯誤，請回到列表重新選擇。
@@ -131,6 +133,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </section>
         `;
     } catch (error) {
+        // id 不存在或 API 失敗時，保留可返回列表的錯誤畫面。
         detail.innerHTML = `
             <div class="detail-error">
                 <h1 class="section-title">找不到此景點資料</h1>

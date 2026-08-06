@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    // 首頁精選區只取得前三筆景點，不必一次載入全部資料。
     const featured = document.getElementById("featuredList");
     const alert = document.getElementById("homeAlert");
 
@@ -16,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+    // 活動資料目前是 index.html 的靜態內容，此處只控制輪播行為。
     const carousel = document.querySelector("[data-event-carousel]");
 
     if (!carousel) {
@@ -29,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let timer;
 
     const visibleCards = () => {
+        // 依螢幕寬度決定一次顯示 1、2 或 3 張卡片。
         if (window.innerWidth < 576) {
             return 1;
         }
@@ -39,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const maxIndex = () => Math.max(0, cards.length - visibleCards());
 
     function renderDots() {
+        // 根據可移動頁數建立輪播圓點。
         dotsBox.innerHTML = "";
 
         for (let i = 0; i <= maxIndex(); i += 1) {
@@ -56,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function update() {
+        // 以 CSS transform 推動卡片軌道，切換目前輪播位置。
         const cardWidth = cards[0].offsetWidth;
         track.style.transform = `translateX(-${index * (cardWidth + 20)}px)`;
 
@@ -75,6 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function restart() {
+        // 手動點擊後重新計時，避免剛操作完立刻又被自動輪播切走。
         clearInterval(timer);
         timer = setInterval(next, 5000);
     }

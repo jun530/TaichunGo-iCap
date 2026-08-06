@@ -1,4 +1,5 @@
 function imageSource(image) {
+    // 資料庫可儲存外部網址或 static 下的相對路徑；空值使用預設圖片。
     if (!image) {
         return "/static/images/Taichung-city.jpg";
     }
@@ -11,16 +12,19 @@ function imageSource(image) {
 }
 
 function escapeHtml(value) {
+    // 將 API 文字當成純文字輸出，避免資料內容被瀏覽器當作 HTML 執行。
     const div = document.createElement("div");
     div.textContent = value ?? "";
     return div.innerHTML;
 }
 
 function formatDate(value) {
+    // SQLite 時間字串只取 YYYY-MM-DD，供列表與詳細頁一致顯示。
     return value ? String(value).slice(0, 10) : "未提供";
 }
 
 function renderNav() {
+    // 依目前頁面與後端注入的登入狀態，動態建立導覽列。
     const page = document.body.dataset.page;
     const links = [
         ["/", "首頁", "home"],
@@ -81,6 +85,7 @@ function renderNav() {
 }
 
 function renderFooter() {
+    // 所有頁面共用同一份頁尾，避免在每個 HTML 樣板重複撰寫。
     document.querySelectorAll("[data-footer]").forEach((element) => {
         element.innerHTML = `
             <footer class="footer mt-5 py-4">
@@ -94,6 +99,7 @@ function renderFooter() {
 }
 
 function createAttractionCard(item) {
+    // 首頁、列表頁與推薦功能共用的景點卡片 HTML。
     return `
         <div class="col">
             <article class="card attraction-card h-100">
@@ -119,6 +125,7 @@ function createAttractionCard(item) {
 }
 
 async function apiFetch(url, options = {}) {
+    // 統一處理 JSON API、錯誤訊息與 Content-Type，呼叫端只要處理成功資料。
     const response = await fetch(url, {
         headers: {
             Accept: "application/json",
@@ -142,6 +149,7 @@ async function apiFetch(url, options = {}) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // HTML 載入完成後才插入共用導覽列與頁尾。
     renderNav();
     renderFooter();
 });

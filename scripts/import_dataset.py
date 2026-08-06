@@ -8,6 +8,7 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 DATABASE_PATH = BASE_DIR / "database" / "taichung_go.db"
 DATASET_PATH = BASE_DIR / "dataset" / "attractions.csv"
 
+# CSV 缺少這些欄位時，匯入會立即停止並提示原因。
 REQUIRED_COLUMNS = {
     "id",
     "name",
@@ -23,6 +24,7 @@ REQUIRED_COLUMNS = {
 
 
 def connect_database():
+    """確保資料庫資料夾存在，並建立啟用外鍵檢查的 SQLite 連線。"""
     DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(DATABASE_PATH)
     connection.execute("PRAGMA foreign_keys = ON")
@@ -30,6 +32,7 @@ def connect_database():
 
 
 def create_tables(connection):
+    """第一次匯入時建立分類與景點兩張資料表。"""
     connection.execute(
         """
         CREATE TABLE IF NOT EXISTS categories (
@@ -71,6 +74,7 @@ def create_tables(connection):
 
 
 def read_dataset():
+    """以 UTF-8 BOM 相容編碼讀取 CSV，並驗證必要欄位。"""
     if not DATASET_PATH.exists():
         raise FileNotFoundError(f"找不到資料集：{DATASET_PATH}")
 
@@ -87,6 +91,7 @@ def read_dataset():
 
 
 def get_category_id(connection, category_name):
+    """先確保分類存在，再取得該分類的主鍵供 attractions.category_id 使用。"""
     connection.execute(
         "INSERT OR IGNORE INTO categories (name) VALUES (?)",
         (category_name,),
@@ -101,11 +106,13 @@ def get_category_id(connection, category_name):
 
 
 def clean_text(row, column, default=""):
+    """統一移除 CSV 文字前後空白；空值則回傳指定預設值。"""
     value = row.get(column, default)
     return value.strip() if value else default
 
 
 def import_rows(connection, rows):
+    """將 CSV 每一列寫入資料庫；同 id 的資料採更新而非重複新增。"""
     imported_count = 0
 
     for row in rows:
@@ -122,6 +129,7 @@ def import_rows(connection, rows):
         if not name or not district or not category or not description:
             raise ValueError(f"id={attraction_id} 的必要欄位不可空白")
 
+        # 景點儲存分類名稱，也透過 category_id 保留與分類表的關聯。
         category_id = get_category_id(connection, category)
 
         connection.execute(
@@ -134,6 +142,7 @@ def import_rows(connection, rows):
                 created_at, updated_at
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            -- 若 CSV id 已存在，更新原資料；適合重複執行匯入。
             ON CONFLICT(id) DO UPDATE SET
                 name = excluded.name,
                 district = excluded.district,
@@ -186,6 +195,7 @@ def import_rows(connection, rows):
 
 
 def main():
+    """匯入程式進入點：讀 CSV、建表、匯入並輸出結果。"""
     try:
         rows = read_dataset()
         with connect_database() as connection:

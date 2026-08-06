@@ -5,6 +5,7 @@
     <a class="detail-back-link" href="/attractions">
         <i class="fa-solid fa-arrow-left me-2"></i>返回景點列表
     </a>
+    {# detail.js 讀取 data-attraction-id 後呼叫單筆景點 API，產生詳細內容。 #}
     <div id="detailContent" data-attraction-id="{{ attraction_id }}"></div>
 </main>
 {% endblock %}

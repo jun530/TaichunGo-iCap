@@ -11,9 +11,11 @@
 </head>
 
 <body data-page="{{ page or '' }}">
+    {# 提供給 main.js，讓前端導覽列知道是否顯示管理功能。 #}
     <script>
         window.isAdminLoggedIn = {{ "true" if is_admin else "false" }};
     </script>
+    {# 共用導覽列與頁尾由 static/js/main.js 動態插入。 #}
     <div data-navbar></div>
     {% block content %}{% endblock %}
     <div data-footer></div>

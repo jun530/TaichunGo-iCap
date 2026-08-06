@@ -31,6 +31,7 @@
         </div>
     </div>
 
+    {# 後台列表篩選；admin.js 監聽欄位變動並重新呼叫列表 API。 #}
     <form id="adminFilter" class="filter-panel p-3 mb-4">
         <div class="row g-2">
             <div class="col-md-5">
@@ -116,6 +117,7 @@
     </section>
 </main>
 
+{# 新增與修改共用同一個 Modal；隱藏的 id 決定送出 POST 或 PATCH。 #}
 <div class="modal fade" id="attractionModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content attraction-modal">
