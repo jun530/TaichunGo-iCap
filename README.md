@@ -37,37 +37,6 @@ Flask RESTful API app.py
 首頁、景點列表、景點詳細頁、管理頁與統計圖表
 ```
 
-## 專案目錄
-
-```text
-TaichungGo-flask/
-├── app.py
-├── config.py
-├── requirements.txt
-├── README.md
-├── .gitignore
-├── database/
-│   └── taichung_go.db
-├── dataset/
-│   └── attractions.csv
-├── docs/
-│   ├── evaluation-checklist.md
-│   └── 實作評量.pdf
-├── scripts/
-│   └── import_dataset.py
-├── static/
-│   ├── css/style.css
-│   ├── js/
-│   └── images/
-└── templates/
-    ├── index.html
-    ├── list.html
-    ├── detail.html
-    ├── admin.html
-    ├── base.html
-    └── 404.html
-```
-
 ## 安裝方式
 
 Windows：
