@@ -75,7 +75,8 @@ http://127.0.0.1:5000
 
 | 方法 | 路徑 | 功能 |
 |---|---|---|
-| GET | `/api/attractions` | 取得景點列表，支援 keyword、district、category、page、per_page、sort、order |
+| POST | `/login` | 管理員登入 |
+| GET | `/api/attractions` | 取得景點列表 |
 | GET | `/api/attractions/<id>` | 取得單一景點 |
 | POST | `/api/attractions` | 新增景點，需管理員登入 |
 | PATCH/PUT | `/api/attractions/<id>` | 修改景點，需管理員登入 |
@@ -138,7 +139,7 @@ Demo 帳密：
 | name | 景點名稱 |
 | district | 行政區 |
 | category_id | 對應 categories.id |
-| category | 分類名稱，方便初學者查看 |
+| category | 分類名稱 |
 | image | 本地圖片相對路徑 |
 | description | 列表簡介 |
 | intro | 詳細介紹 |
